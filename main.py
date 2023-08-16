@@ -1,4 +1,8 @@
 import discord
+from utils import Utils
+
+# creating utils instance
+utils = Utils()
 
 # configure discord intents
 intents = discord.Intents.default()
@@ -15,7 +19,19 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    print(message)
+    # message from the bot itself
+    if message.author == client.user:
+        return
+
+    props = message.content.split(maxsplit=6)
+    command = props[0]
+
+    # command validation
+    if command in utils.commands:
+
+        # !info command
+        if command == utils.commands[0]:
+            await message.channel.send('Hello I am Robo!')
 
 
-client.run('MTEzODM0OTM0Njg1Nzk0NzE2Nw.Ghpzv2.Z8Y1L18GjZuEgVIDK9q_cylQq2s57Ky3nE82-4')
+client.run(utils.botToken)
