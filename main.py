@@ -29,6 +29,7 @@ async def on_message(message):
     props = message.content.split(maxsplit=6)
     command = props[0]
 
+
     # command validation
     if command in utils.commands:
 
