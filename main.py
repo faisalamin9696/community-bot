@@ -1,8 +1,11 @@
 import discord
+
+from steemfun import SteemFun
 from utils import Utils
 
-# creating utils instance
+# creating utils and steemfun instance
 utils = Utils()
+steemfun = SteemFun()
 
 # configure discord intents
 intents = discord.Intents.default()
@@ -31,7 +34,7 @@ async def on_message(message):
 
         # !info command
         if command == utils.commands[0]:
-            await message.channel.send('Hello I am Robo!')
+            await steemfun.get_account_ext('faisalamin')
 
 
-client.run(utils.botToken)
+client.run(utils.bot_token)
