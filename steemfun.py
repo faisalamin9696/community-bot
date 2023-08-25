@@ -1,3 +1,6 @@
+import json
+
+import discord
 import requests
 
 from utils import Utils
@@ -56,3 +59,50 @@ class SteemFun:
             api = self.utils.sds_base + f"/accounts_api/getAccountExt/{username}"
             response = requests.get(api).json()
             return map_sds_response(response)
+
+    async def get_steem_props(self):
+        api = self.utils.sds_base + "/steem_requests_api/getSteemProps"
+        response = requests.get(api).json()
+        return map_sds_response(response)
+
+    async def vest_to_steem(self, vests):
+        steem_props = await self.get_steem_props()
+        # noinspection PyTypeChecker
+        return vests * steem_props['steem_per_share']
+
+
+    # noinspection PyMethodMayBeStatic
+    async def generate_info_embed(self, account_data):
+        embed = discord.Embed()
+        name = account_data['name']
+        if account_data['posting_json_metadata']:
+            posting_json = json.loads(account_data['posting_json_metadata'])
+            if posting_json['profile']:
+                try:
+                    user_cover = posting_json['profile']['cover_image']
+                    user_name = posting_json['profile']['name']
+                    if user_cover is not None:
+                        embed.set_image(url=user_cover)
+                    if user_name is not None:
+                        embed.add_field(name='Name', value=user_name)
+                except Exception:
+                    pass
+
+        user_avatar = 'https://steemitimages.com/u/' + name + '/avatar/small'
+
+        profile_url = self.utils.steemit_base + '/@' + name
+        steem_power = await self.vest_to_steem(account_data['vests_own'])
+        embed.set_author(name=name, url=profile_url, icon_url=user_avatar)
+
+        embed.add_field(name='Upvote Power', value=account_data['upvote_mana_percent'])
+        embed.add_field(name='Downvote Power', value=account_data['downvote_mana_percent'])
+        embed.add_field(name='Resource Credits', value=account_data['rc_mana_percent'])
+        embed.add_field(name='Resource Credits', value=account_data['rc_mana_percent'])
+        embed.add_field(name='Creator', value=account_data['creator'])
+        embed.add_field(name='Recovery Account', value=account_data['recovery_account'])
+        embed.add_field(name='Steem Balance', value=account_data['balance_steem'])
+        embed.add_field(name='SBD Balance', value=account_data['balance_sbd'])
+        # fixing 3 decimal points of Steem Power
+        embed.add_field(name='Steem Power', value=f"{steem_power:.3f}")
+
+        return embed

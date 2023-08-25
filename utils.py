@@ -6,5 +6,8 @@ class Utils:
         # bot commands
         self.commands = ['!info']
 
+        # steemit base url
+        self.steemit_base = 'https://steemit.com'
+
         # sds base url
         self.sds_base = 'https://sds0.steemworld.org'

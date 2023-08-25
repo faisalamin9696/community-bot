@@ -1,3 +1,5 @@
+import json
+
 import discord
 
 from steemfun import SteemFun
@@ -39,15 +41,11 @@ async def on_message(message):
                 await message.channel.typing()
                 try:
                     account_data = await  steemfun.get_account_ext(username)
-                    print(1122, account_data['name'])
-                    if account_data is not None:
-                        await message.reply(f'username: {account_data.get("name")}\n'
-                                            f'Steem: {account_data.get("balance_steem")}\n'
-                                            f'SBD: {account_data.get("balance_sbd")}\n'
-                                            f'VP: {account_data.get("upvote_mana_percent")}\n'
-                                            f'RC: {account_data.get("rc_mana_percent")}\n')
+                    embed = await steemfun.generate_info_embed(account_data)
+                    await message.reply(embed=embed)
+
                 except Exception as e:
-                    await message.channel.send("Error " + str(e))
+                    await message.channel.send("Error: " + str(e))
 
 
 client.run(utils.bot_token)
