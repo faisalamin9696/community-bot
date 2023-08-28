@@ -70,7 +70,6 @@ class SteemFun:
         # noinspection PyTypeChecker
         return vests * steem_props['steem_per_share']
 
-
     # noinspection PyMethodMayBeStatic
     async def generate_info_embed(self, account_data):
         embed = discord.Embed()
@@ -106,3 +105,8 @@ class SteemFun:
         embed.add_field(name='Steem Power', value=f"{steem_power:.3f}")
 
         return embed
+
+    async def get_community_report(self, community):
+        api = self.utils.sds_base + f"/feeds_api/getActiveCommunityReport/{community}"
+        response = requests.get(api).json()
+        return map_sds_response(response)

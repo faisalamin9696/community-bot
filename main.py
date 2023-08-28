@@ -47,5 +47,12 @@ async def on_message(message):
                 except Exception as e:
                     await message.channel.send("Error: " + str(e))
 
+        # !report command
+        if command == utils.commands[1]:
+            if len(props) >= 2:
+                community = str(props[1]).lower().replace('@', '')
+                community_report = await steemfun.get_community_report(community)
+                print(community_report)
+
 
 client.run(utils.bot_token)
