@@ -1,4 +1,5 @@
 import json
+import os
 
 import discord
 
@@ -15,6 +16,25 @@ intents.message_content = True
 
 # creating client instance
 client = discord.Client(intents=intents)
+
+
+def create_directory(path):
+    # Check whether the specified path exists or not
+    is_exist = os.path.exists(path)
+
+    if not is_exist:
+        # Create a new directory because it does not exist
+        os.makedirs(path)
+
+
+# Commit
+create_directory(utils.folder_path)
+
+
+def create_file(file_name, content):
+    f = open(utils.folder_path + file_name, "w")
+    f.write(content)
+    f.close()
 
 
 @client.event
@@ -50,9 +70,13 @@ async def on_message(message):
         # !report command
         if command == utils.commands[1]:
             if len(props) >= 2:
+                await message.channel.typing()
                 community = str(props[1]).lower().replace('@', '')
                 community_report = await steemfun.get_community_report(community)
-                print(community_report)
+                create_file(f"{community}-report.txt", community_report)
+                await message.reply(f'**{community} Report (7-Days):**',
+                                file=discord.File(utils.folder_path + f"{community}-report.txt"))
+
 
 
 client.run(utils.bot_token)

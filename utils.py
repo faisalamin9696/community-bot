@@ -11,3 +11,6 @@ class Utils:
 
         # sds base url
         self.sds_base = 'https://sds0.steemworld.org'
+
+        self.folder_path = 'community-bot/files/'
+

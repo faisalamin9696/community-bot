@@ -109,4 +109,11 @@ class SteemFun:
     async def get_community_report(self, community):
         api = self.utils.sds_base + f"/feeds_api/getActiveCommunityReport/{community}"
         response = requests.get(api).json()
-        return map_sds_response(response)
+        community_report = map_sds_response(response)
+        formatted_report = ''
+        for item in community_report:
+            formatted_report = (
+                                   f'| {item.get("author")} | {item.get("total_post_count")} | {item.get("total_comment_count")} | '
+                                   f'{item.get("unique_comment_count")} |\n') + formatted_report
+
+        return '|Username|Posts|Comments|Unique Comments|\n|-|-|-|-|\n' + formatted_report
