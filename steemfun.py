@@ -117,3 +117,9 @@ class SteemFun:
                                    f'{item.get("unique_comment_count")} |\n') + formatted_report
 
         return '|Username|Posts|Comments|Unique Comments|\n|-|-|-|-|\n' + formatted_report
+
+    async def get_author_report(self, username, community):
+        api = self.utils.sds_base + f"/feeds_api/getActiveCommunityAuthorReport/{community}/{username}"
+        response = requests.get(api).json()
+        author_report = map_sds_response(response)
+        return author_report

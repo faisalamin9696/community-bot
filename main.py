@@ -69,14 +69,26 @@ async def on_message(message):
 
         # !report command
         if command == utils.commands[1]:
-            if len(props) >= 2:
+            if len(props) == 2:
                 await message.channel.typing()
                 community = str(props[1]).lower().replace('@', '')
                 community_report = await steemfun.get_community_report(community)
                 create_file(f"{community}-report.txt", community_report)
                 await message.reply(f'**{community} Report (7-Days):**',
-                                file=discord.File(utils.folder_path + f"{community}-report.txt"))
-
+                                    file=discord.File(utils.folder_path + f"{community}-report.txt"))
+            if len(props) == 3:
+                await message.channel.typing()
+                username = str(props[1]).lower().replace('@', '')
+                community = str(props[2]).lower().replace('@', '')
+                author_report = await steemfun.get_author_report(username, community)
+                embed = discord.Embed()
+                profile_url = utils.steemit_base + '/@' + username
+                user_avatar = 'https://steemitimages.com/u/' + username + '/avatar/small'
+                embed.set_author(name=username, url=profile_url, icon_url=user_avatar)
+                embed.add_field(name='Posts',value= author_report.get('total_post_count'))
+                embed.add_field(name='Comments', value=author_report.get('total_comment_count'))
+                embed.add_field(name='Unique Comments',value= author_report.get('unique_comment_count'))
+                await message.reply(embed=embed)
 
 
 client.run(utils.bot_token)
