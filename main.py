@@ -85,10 +85,32 @@ async def on_message(message):
                 profile_url = utils.steemit_base + '/@' + username
                 user_avatar = 'https://steemitimages.com/u/' + username + '/avatar/small'
                 embed.set_author(name=username, url=profile_url, icon_url=user_avatar)
-                embed.add_field(name='Posts',value= author_report.get('total_post_count'))
+                embed.add_field(name='Posts', value=author_report.get('total_post_count'))
                 embed.add_field(name='Comments', value=author_report.get('total_comment_count'))
-                embed.add_field(name='Unique Comments',value= author_report.get('unique_comment_count'))
+                embed.add_field(name='Unique Comments', value=author_report.get('unique_comment_count'))
                 await message.reply(embed=embed)
+
+        # !vote command
+        if command == utils.commands[2]:
+            if len(props) == 3:
+                post_link = str(props[1]).split('/')
+                post_link.reverse()
+                perm_link = post_link[0]
+                post_author = post_link[1]
+                identifier = f'{post_author}/{perm_link}'
+                weight = float(props[2])
+
+                await message.channel.typing()
+                try:
+                    steem = utils.steem_vote_instance
+                    response = steem.vote(weight=weight, identifier=identifier, account=utils.voter_username, )
+                    if response.get('trx_id'):
+                        await message.reply(f'Voted at {weight}%')
+                    else:
+                        await message.reply(f'Failed')
+
+                except Exception as e:
+                    await message.channel.send("Error: " + str(e))
 
 
 client.run(utils.bot_token)
