@@ -2,6 +2,7 @@ import json
 import os
 
 import discord
+from beem.comment import Comment
 
 from steemfun import SteemFun
 from utils import Utils
@@ -103,9 +104,31 @@ async def on_message(message):
                 await message.channel.typing()
                 try:
                     steem = utils.steem_vote_instance
-                    response = steem.vote(weight=weight, identifier=identifier, account=utils.voter_username, )
+                    response = steem.vote(weight=weight, identifier=identifier, account=utils.voter_username)
                     if response.get('trx_id'):
                         await message.reply(f'Voted at {weight}%')
+                    else:
+                        await message.reply(f'Failed')
+
+                except Exception as e:
+                    await message.channel.send("Error: " + str(e))
+
+        # !send command
+        if command == utils.commands[3]:
+            if len(props) == 2:
+                post_link = str(props[1]).split('/')
+                post_link.reverse()
+                perm_link = post_link[0]
+                post_author = post_link[1]
+                identifier = f'{post_author}/{perm_link}'
+                body = 'Hello testing the steem community bot created by @faisalamin'
+                await message.channel.typing()
+                try:
+                    steem = utils.steem_vote_instance
+                    comment = Comment(authorperm=identifier, blockchain_instance=steem)
+                    response = comment.reply(body=body, author=utils.voter_username)
+                    if response.get('trx_id'):
+                        await message.reply(f'Comment sent to www.steemit.com/@{identifier}')
                     else:
                         await message.reply(f'Failed')
 

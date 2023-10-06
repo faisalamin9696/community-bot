@@ -4,10 +4,10 @@ from beem import Steem
 class Utils:
     def __init__(self):
         # discord bot token
-        self.bot_token = 'BOT_TOKEN_HERE'
+        self.bot_token = 'BOT_KEY_HERE'
 
         # bot commands
-        self.commands = ['!info', '!report', '!vote']
+        self.commands = ['!info', '!report', '!vote', '!send']
 
         # steemit base url
         self.steemit_base = 'https://steemit.com'
