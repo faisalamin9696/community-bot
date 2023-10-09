@@ -4,7 +4,7 @@ from beem import Steem
 class Utils:
     def __init__(self):
         # discord bot token
-        self.bot_token = 'BOT_KEY_HERE'
+        self.bot_token = 'BOT_TOKEN_HERE'
 
         # bot commands
         self.commands = ['!info', '!report', '!vote', '!send']

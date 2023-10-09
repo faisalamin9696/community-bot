@@ -126,9 +126,9 @@ async def on_message(message):
                 try:
                     steem = utils.steem_vote_instance
                     comment = Comment(authorperm=identifier, blockchain_instance=steem)
-                    response = comment.reply(body=body, author=utils.voter_username)
+                    response = comment.reply(body=body, author=utils.voter_username, meta={'app': 'steemlite/0.1.2'})
                     if response.get('trx_id'):
-                        await message.reply(f'Comment sent to www.steemit.com/@{identifier}')
+                        await message.reply(f'Comment sent to https://www.steemit.com/{identifier}')
                     else:
                         await message.reply(f'Failed')
 
